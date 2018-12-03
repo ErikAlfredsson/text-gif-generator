@@ -17,7 +17,7 @@ const OUTPUT_DIR = 'output';
 const SPACE_IMAGE_NAME = `${OUTPUT_DIR}/blank.gif`;
 const OUTPUT_GIF_NAME = 'output';
 const BACKGROUND_DIR = 'backgrounds';
-const BACKGROUND_NAME = 'background1.jpg';
+const BACKGROUND_NAME = `${BACKGROUND_DIR}/800px_COLOURBOX25785234.jpg`;
 const BACKGROUND_RESIZED_NAME = 'background_resized.gif';
 
 /* COMMAND LINE */
@@ -67,16 +67,16 @@ function createGIF(backgroundPath) {
       promises.push(
         sh(
           `convert -size ${SIZE}x${SIZE} \
-        xc:${BACKGROUND_COLOR} \
-        -font Trebuchet \
-        -pointSize ${FONT_SIZE} \
-        -tile ${resizedBackgroundName} \
-        -fill ${FONT_COLOR} \
-        -stroke ${STROKE_COLOR} \
-        -strokewidth ${STROKE_WIDTH} \
-        -gravity center \
-        -draw "text 0,0 '${c.toUpperCase()}'" \
-        ${name}`
+          xc:${BACKGROUND_COLOR} \
+          -font Trebuchet \
+          -pointSize ${FONT_SIZE} \
+          -tile ${resizedBackgroundName} \
+          -fill ${FONT_COLOR} \
+          -stroke ${STROKE_COLOR} \
+          -strokewidth ${STROKE_WIDTH} \
+          -gravity center \
+          -draw "text 0,0 '${c.toUpperCase()}'" \
+          ${name}`
         )
       );
 
@@ -102,12 +102,13 @@ function createGIF(backgroundPath) {
 }
 
 async function resizeBackground(backgroundPath) {
-  const { stdout } = await sh(`identify -ping -format '%w %h' ${backgroundPath || BACKGROUND_NAME}`);
+  const background = backgroundPath || BACKGROUND_NAME;
+  const { stdout } = await sh(`identify -ping -format '%w %h' ${background}`);
   const size = stdout.split(' ');
   const width = size[0];
   const height = size[1];
 
-  await sh(`convert ${backgroundPath} -resize ${SIZE}x${SIZE} ${resizedBackgroundName}`);
+  await sh(`convert ${background} -resize ${SIZE}x${SIZE} ${resizedBackgroundName}`);
 }
 
 async function selectBackground() {
