@@ -19,6 +19,7 @@ const OUTPUT_GIF_NAME = 'output';
 const BACKGROUND_DIR = 'backgrounds';
 const BACKGROUND_NAME = `${BACKGROUND_DIR}/800px_COLOURBOX25785234.jpg`;
 const BACKGROUND_RESIZED_NAME = 'background_resized.gif';
+const COLORS = ['pink', 'black', 'lightgreen', 'lightblue', 'purple', 'white', 'lightyellow'];
 
 /* COMMAND LINE */
 
@@ -34,25 +35,19 @@ async function sh(cmd) {
   });
 }
 
-/* EARLY EXIT THING */
+/* HELPER */
 
-const args = process.argv.slice(2);
-const inputString = args[0];
-
-if (!inputString) {
-  console.log(
-    '\n\nYou need to pass in a string as an argument like this:\n\nnode text_generator.js "hi how are you?"\n\nGive it a go!\n\n'
-  );
-  return;
+function numberedList(array) {
+  return array.map((name, index) => `${index}. ${name}`).join('\n');
 }
 
 /* MAIN */
-const words = inputString.split(' ');
+
 const names = [];
-const promises = [sh(`convert -size ${SIZE}x${SIZE} canvas:${BACKGROUND_COLOR} ${SPACE_IMAGE_NAME}`)];
+const promises = [];
 const resizedBackgroundName = `${OUTPUT_DIR}/${BACKGROUND_RESIZED_NAME}`;
 
-function createImage(text, offsetY) {
+function createImage(text, backgroundColor, offsetY) {
   console.log('.');
 
   // kind-of-random name
@@ -66,7 +61,7 @@ function createImage(text, offsetY) {
   promises.push(
     sh(
       `convert -size ${SIZE}x${SIZE} \
-      xc:${BACKGROUND_COLOR} \
+      xc:${backgroundColor} \
       -font Trebuchet \
       -pointSize ${FONT_SIZE} \
       -tile ${resizedBackgroundName} \
@@ -82,7 +77,11 @@ function createImage(text, offsetY) {
   names.push(name, SPACE_IMAGE_NAME);
 }
 
-function createGIF(backgroundPath) {
+function createGIF(backgroundPath, backgroundColor, text) {
+  const words = text.split(' ');
+
+  promises.push(sh(`convert -size ${SIZE}x${SIZE} canvas:${backgroundColor} ${SPACE_IMAGE_NAME}`));
+
   // SOME 'PADDING' BEFORE STARTING
   names.push(SPACE_IMAGE_NAME, SPACE_IMAGE_NAME);
 
@@ -91,18 +90,18 @@ function createGIF(backgroundPath) {
     const smiley = /:\)|:-\)|:\(|:-\(|;\);-\)|:-O|8-|:P|:D|:\||:S|:\$|:@|8o\||\+o\(|\(H\)|\(C\)|\(\?\)/g.exec(word);
 
     if (smiley) {
-      createImage(word, -SIZE * 0.1);
+      createImage(word, backgroundColor, SIZE * 0.425);
     } else {
       characters.forEach(async (c, index) => {
         const name = `${wordIndex}_${index}`;
-        createImage(c);
+        createImage(c, backgroundColor);
       });
     }
 
     names.push(SPACE_IMAGE_NAME, SPACE_IMAGE_NAME);
   });
 
-  Promise.all(promises).then(async () => {
+  return Promise.all(promises).then(async () => {
     const imageNames = names.join(' ');
 
     console.log('\nCreating gif...');
@@ -137,14 +136,48 @@ async function selectBackground() {
   await sh(`echo ${currentIndex + 1} > .curr_index.txt`);
 
   return `${BACKGROUND_DIR}/${backgroundNames[nextIndex]}`;
-  // const { stdout } = await sh('a=(backgrounds/*); echo ${a[$((RANDOM % ${#a[@]}))]}');
-  // return stdout.replace(/\n/g, '');
 }
 
-if (RANDOM) {
-  selectBackground()
-    .then(backgroundPath => resizeBackground(backgroundPath))
-    .then(() => createGIF());
-} else {
-  resizeBackground().then(() => createGIF());
-}
+let selectedBackground = null;
+let selectedBackgroundColor = null;
+let selectedText = null;
+
+const standard_input = process.stdin;
+standard_input.setEncoding('utf-8');
+
+// Prompt user to input data in console.
+sh('ls -1 backgrounds').then(({ stdout }) => {
+  console.log('\nStart by selecting a background:\n');
+
+  const backgroundNames = stdout.slice(0, -1).split('\n');
+
+  console.log(numberedList(backgroundNames));
+  console.log('\n');
+
+  standard_input.on('data', function(data) {
+    if (data === 'cancel\n') {
+      process.exit();
+    } else if (selectedBackground === null && parseInt(data, 10) < backgroundNames.length && parseInt(data, 10) >= 0) {
+      selectedBackground = BACKGROUND_DIR + '/' + backgroundNames[parseInt(data, 10)];
+
+      console.log('\n------------------\n');
+      console.log('Now select a color:\n');
+      console.log(numberedList(COLORS));
+      console.log('\n');
+    } else if (selectedBackgroundColor === null && parseInt(data, 10) < COLORS.length && parseInt(data, 10) >= 0) {
+      selectedBackgroundColor = COLORS[parseInt(data, 10)];
+
+      console.log('\n------------------\n');
+      console.log('What would you like the GIF to say?\n');
+      console.log('\n');
+    } else if (selectedText === null && selectBackground !== null && selectedBackgroundColor !== null && data) {
+      selectedText = data;
+
+      resizeBackground(selectedBackground)
+        .then(() => createGIF(selectedBackground, selectedBackgroundColor, selectedText))
+        .then(() => process.exit());
+    } else {
+      console.log("\nI didn't quite get that. Type 'cancel' or 'exit' if you want to quit\n");
+    }
+  });
+});
