@@ -52,36 +52,53 @@ const names = [];
 const promises = [sh(`convert -size ${SIZE}x${SIZE} canvas:${BACKGROUND_COLOR} ${SPACE_IMAGE_NAME}`)];
 const resizedBackgroundName = `${OUTPUT_DIR}/${BACKGROUND_RESIZED_NAME}`;
 
+function createImage(text, imageName, offsetY) {
+  console.log('.');
+
+  const name = `${OUTPUT_DIR}/${imageName}.gif`;
+
+  promises.push(
+    sh(
+      `convert -size ${SIZE}x${SIZE} \
+      xc:${BACKGROUND_COLOR} \
+      -font Trebuchet \
+      -pointSize ${FONT_SIZE} \
+      -tile ${resizedBackgroundName} \
+      -fill ${FONT_COLOR} \
+      -stroke ${STROKE_COLOR} \
+      -strokewidth ${STROKE_WIDTH} \
+      -gravity center \
+      -draw "text 0,${offsetY || '0'} '${text.toUpperCase()}'" \
+      ${name}`
+    )
+  );
+
+  names.push(name, SPACE_IMAGE_NAME);
+}
+
 function createGIF(backgroundPath) {
   // SOME 'PADDING' BEFORE STARTING
   names.push(SPACE_IMAGE_NAME, SPACE_IMAGE_NAME);
 
   words.forEach((word, wordIndex) => {
     const characters = word.split('');
+    const smiley = /:\)|:-\)|:\(|:-\(|;\);-\)|:-O|8-|:P|:D|:\||:S|:\$|:@|8o\||\+o\(|\(H\)|\(C\)|\(\?\)/g.exec(word);
 
-    characters.forEach(async (c, index) => {
-      console.log('.');
-
-      const name = `${OUTPUT_DIR}/${wordIndex}_${index}.gif`;
-
-      promises.push(
-        sh(
-          `convert -size ${SIZE}x${SIZE} \
-          xc:${BACKGROUND_COLOR} \
-          -font Trebuchet \
-          -pointSize ${FONT_SIZE} \
-          -tile ${resizedBackgroundName} \
-          -fill ${FONT_COLOR} \
-          -stroke ${STROKE_COLOR} \
-          -strokewidth ${STROKE_WIDTH} \
-          -gravity center \
-          -draw "text 0,0 '${c.toUpperCase()}'" \
-          ${name}`
-        )
+    if (smiley) {
+      createImage(
+        word,
+        '_' + // kind of random hash thing
+          Math.random()
+            .toString(36)
+            .substr(2, 9),
+        -SIZE * 0.1
       );
-
-      names.push(name, SPACE_IMAGE_NAME);
-    });
+    } else {
+      characters.forEach(async (c, index) => {
+        const name = `${wordIndex}_${index}`;
+        createImage(c, name);
+      });
+    }
 
     names.push(SPACE_IMAGE_NAME, SPACE_IMAGE_NAME);
   });
@@ -112,7 +129,7 @@ async function resizeBackground(backgroundPath) {
 }
 
 async function selectBackground() {
-  const { stdout } = await sh('a=(backgrounds/*.jpg); echo ${a[$((RANDOM % ${#a[@]}))]}');
+  const { stdout } = await sh('a=(backgrounds/*); echo ${a[$((RANDOM % ${#a[@]}))]}');
   return stdout.replace(/\n/g, '');
 }
 
