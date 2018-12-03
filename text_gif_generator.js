@@ -15,7 +15,7 @@ const STROKE_COLOR = 'white';
 
 const OUTPUT_DIR = 'output';
 const SPACE_IMAGE_NAME = `${OUTPUT_DIR}/blank.gif`;
-const OUTPUT_GIF_NAME = 'output';
+const OUTPUT_GIF_NAME = 'output.gif';
 const BACKGROUND_DIR = 'backgrounds';
 const BACKGROUND_NAME = `${BACKGROUND_DIR}/800px_COLOURBOX25785234.jpg`;
 const BACKGROUND_RESIZED_NAME = 'background_resized.gif';
@@ -106,13 +106,13 @@ function createGIF(backgroundPath, backgroundColor, text) {
 
     console.log('\nCreating gif...');
     // CREATE GIF
-    await sh(`convert -loop 0 -delay ${SPEED} ${imageNames} ${OUTPUT_DIR}/${OUTPUT_GIF_NAME}.gif`);
+    await sh(`convert -loop 0 -delay ${SPEED} ${imageNames} ${OUTPUT_DIR}/${OUTPUT_GIF_NAME}`);
 
     console.log('\nCleaning up mess...');
     // CLEANUP
     await sh(`rm -rf ${imageNames}`);
     await sh(`rm ${resizedBackgroundName}`);
-    console.log(`\nDone! Now grab the gif called ${OUTPUT_GIF_NAME}.gif in the ${OUTPUT_DIR} folder`);
+    console.log(`\nDone! Now grab the gif called ${OUTPUT_GIF_NAME} in the folder called ${OUTPUT_DIR}`);
   });
 }
 
@@ -124,18 +124,6 @@ async function resizeBackground(backgroundPath) {
   const height = size[1];
 
   await sh(`convert ${background} -resize ${SIZE}x${SIZE} ${resizedBackgroundName}`);
-}
-
-async function selectBackground() {
-  const currentIndexResult = await sh('cat .curr_index.txt');
-  const backgroundsResult = await sh('ls -1 backgrounds');
-  const currentIndex = parseInt(currentIndexResult.stdout, 10);
-  const backgroundNames = backgroundsResult.stdout.slice(0, -1).split('\n');
-  const nextIndex = currentIndexResult.stdout % backgroundNames.length;
-
-  await sh(`echo ${currentIndex + 1} > .curr_index.txt`);
-
-  return `${BACKGROUND_DIR}/${backgroundNames[nextIndex]}`;
 }
 
 let selectedBackground = null;
