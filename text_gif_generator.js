@@ -172,6 +172,9 @@ sh('find backgrounds -type f -not -path "*.DS_Store"').then(({ stdout }) => {
     } else if (selectedText === null && selectedBackground !== null && selectedBackgroundColor !== null && data) {
       selectedText = data;
 
+      console.log('\n------------------\n');
+      console.log('OK. Hold on!');
+
       resizeBackground(selectedBackground)
         .then(() => createGIF(selectedBackground, selectedBackgroundColor, selectedText))
         .then(() => process.exit());
