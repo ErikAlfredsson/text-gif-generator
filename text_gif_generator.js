@@ -2,13 +2,13 @@ var exec = require('child_process').exec;
 
 /* VARIABLES */
 
-const SPEED = 12; // in ms
-const SIZE = 150; // resolution in pixels
+const SPEED = 15; // in ms
+const SIZE = 1000; // resolution in pixels
 const FONT_SIZE = SIZE * 0.9; // points NOT BEING USED RIGHT NOW. IF YOU WANT TO USE ADD -pointSize ${FONT_SIZE} WHEN CREATING CHARACTER IMAGE
-const BACKGROUND_COLOR = 'pink'; // in text (haha), could probably be hex somehow
+const BACKGROUND_COLOR = 'black'; // in text (haha), could probably be hex somehow
 const FONT_COLOR = 'lightgreen'; // in text (haha), could probably be hex somehow
-const STROKE_WIDTH = 0;
-const STROKE_COLOR = 'lightblue';
+const STROKE_WIDTH = 5;
+const STROKE_COLOR = 'white';
 
 /* CONSTANTS */
 
@@ -65,6 +65,7 @@ words.forEach((word, wordIndex) => {
         xc:${BACKGROUND_COLOR} \
         -font Trebuchet \
         -pointSize ${FONT_SIZE} \
+        -tile background.jpg \
         -fill ${FONT_COLOR} \
         -stroke ${STROKE_COLOR} \
         -strokewidth ${STROKE_WIDTH} \
