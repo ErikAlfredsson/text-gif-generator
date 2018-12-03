@@ -158,7 +158,7 @@ sh('ls -1 backgrounds').then(({ stdout }) => {
       console.log('\n------------------\n');
       console.log('What would you like the GIF to say?\n');
       console.log('\n');
-    } else if (selectedText === null && selectBackground !== null && selectedBackgroundColor !== null && data) {
+    } else if (selectedText === null && selectedBackground !== null && selectedBackgroundColor !== null && data) {
       selectedText = data;
 
       resizeBackground(selectedBackground)
