@@ -13,3 +13,7 @@ You need to install these dependencies
 Pass in a string that you want converted into a GIF:
 
 - `node text_gif_generator.js "hi"`
+
+## Example
+
+![Alt Text](https://github.com/ErikAlfredsson/text-gif-generator/blob/master/example.gif)
