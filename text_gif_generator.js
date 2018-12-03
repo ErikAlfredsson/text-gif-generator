@@ -4,7 +4,7 @@ var exec = require('child_process').exec;
 
 const RANDOM = true;
 const SPEED = 13; // in ms
-const SIZE = 1000; // resolution in pixels
+const SIZE = 250; // resolution in pixels
 const FONT_SIZE = SIZE * 0.9; // points NOT BEING USED RIGHT NOW. IF YOU WANT TO USE ADD -pointSize ${FONT_SIZE} WHEN CREATING CHARACTER IMAGE
 const BACKGROUND_COLOR = 'pink'; // in text (haha), could probably be hex somehow
 const FONT_COLOR = 'lightgreen'; // in text (haha), could probably be hex somehow
@@ -52,9 +52,15 @@ const names = [];
 const promises = [sh(`convert -size ${SIZE}x${SIZE} canvas:${BACKGROUND_COLOR} ${SPACE_IMAGE_NAME}`)];
 const resizedBackgroundName = `${OUTPUT_DIR}/${BACKGROUND_RESIZED_NAME}`;
 
-function createImage(text, imageName, offsetY) {
+function createImage(text, offsetY) {
   console.log('.');
 
+  // kind-of-random name
+  const imageName =
+    '_' +
+    Math.random()
+      .toString(36)
+      .substr(2, 9);
   const name = `${OUTPUT_DIR}/${imageName}.gif`;
 
   promises.push(
@@ -85,18 +91,11 @@ function createGIF(backgroundPath) {
     const smiley = /:\)|:-\)|:\(|:-\(|;\);-\)|:-O|8-|:P|:D|:\||:S|:\$|:@|8o\||\+o\(|\(H\)|\(C\)|\(\?\)/g.exec(word);
 
     if (smiley) {
-      createImage(
-        word,
-        '_' + // kind of random hash thing
-          Math.random()
-            .toString(36)
-            .substr(2, 9),
-        -SIZE * 0.1
-      );
+      createImage(word, -SIZE * 0.1);
     } else {
       characters.forEach(async (c, index) => {
         const name = `${wordIndex}_${index}`;
-        createImage(c, name);
+        createImage(c);
       });
     }
 
