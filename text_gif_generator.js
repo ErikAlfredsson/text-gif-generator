@@ -19,7 +19,17 @@ const OUTPUT_GIF_NAME = 'output.gif';
 const BACKGROUND_DIR = 'backgrounds';
 const BACKGROUND_NAME = `${BACKGROUND_DIR}/800px_COLOURBOX25785234.jpg`;
 const BACKGROUND_RESIZED_NAME = 'background_resized.gif';
-const COLORS = ['pink', 'black', 'lightgreen', 'lightblue', 'purple', 'white', 'lightyellow'];
+const COLORS = [
+  'Pink',
+  'Black',
+  'LightGreen',
+  'LightBlue',
+  'Purple',
+  'White',
+  'LightYellow',
+  'FireBrick1',
+  'SlateGray2',
+];
 
 /* COMMAND LINE */
 
@@ -134,22 +144,23 @@ const standard_input = process.stdin;
 standard_input.setEncoding('utf-8');
 
 // Prompt user to input data in console.
-sh('ls -1 backgrounds').then(({ stdout }) => {
-  console.log('\nStart by selecting a background:\n');
+// sh('ls -1 backgrounds').then(({ stdout }) => {
+sh('find backgrounds -type f -not -path "*.DS_Store"').then(({ stdout }) => {
+  console.log('\nStart by selecting an image to use for the letters:\n');
 
   const backgroundNames = stdout.slice(0, -1).split('\n');
 
-  console.log(numberedList(backgroundNames));
+  console.log(numberedList(backgroundNames.map(name => name.replace('backgrounds/', ''))));
   console.log('\n');
 
   standard_input.on('data', function(data) {
     if (data === 'cancel\n') {
       process.exit();
     } else if (selectedBackground === null && parseInt(data, 10) < backgroundNames.length && parseInt(data, 10) >= 0) {
-      selectedBackground = BACKGROUND_DIR + '/' + backgroundNames[parseInt(data, 10)];
+      selectedBackground = backgroundNames[parseInt(data, 10)];
 
       console.log('\n------------------\n');
-      console.log('Now select a color:\n');
+      console.log('Now select a background color:\n');
       console.log(numberedList(COLORS));
       console.log('\n');
     } else if (selectedBackgroundColor === null && parseInt(data, 10) < COLORS.length && parseInt(data, 10) >= 0) {
