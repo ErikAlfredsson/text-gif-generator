@@ -10,9 +10,9 @@ You need to install these dependencies
 
 ## Run
 
-Pass in a string that you want converted into a GIF:
+Just execute the following command and follow the instructions:
 
-- `node text_gif_generator.js "hi"`
+- `node text_gif_generator.js`
 
 ## Example
 
