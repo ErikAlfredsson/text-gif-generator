@@ -4,7 +4,7 @@ var exec = require('child_process').exec;
 
 const RANDOM = true;
 const SPEED = 13; // in ms
-const SIZE = 250; // resolution in pixels
+const SIZE = 500; // resolution in pixels
 const FONT_SIZE = SIZE * 0.9; // points NOT BEING USED RIGHT NOW. IF YOU WANT TO USE ADD -pointSize ${FONT_SIZE} WHEN CREATING CHARACTER IMAGE
 const BACKGROUND_COLOR = 'pink'; // in text (haha), could probably be hex somehow
 const FONT_COLOR = 'lightgreen'; // in text (haha), could probably be hex somehow
@@ -128,8 +128,17 @@ async function resizeBackground(backgroundPath) {
 }
 
 async function selectBackground() {
-  const { stdout } = await sh('a=(backgrounds/*); echo ${a[$((RANDOM % ${#a[@]}))]}');
-  return stdout.replace(/\n/g, '');
+  const currentIndexResult = await sh('cat .curr_index.txt');
+  const backgroundsResult = await sh('ls -1 backgrounds');
+  const currentIndex = parseInt(currentIndexResult.stdout, 10);
+  const backgroundNames = backgroundsResult.stdout.slice(0, -1).split('\n');
+  const nextIndex = currentIndexResult.stdout % backgroundNames.length;
+
+  await sh(`echo ${currentIndex + 1} > .curr_index.txt`);
+
+  return `${BACKGROUND_DIR}/${backgroundNames[nextIndex]}`;
+  // const { stdout } = await sh('a=(backgrounds/*); echo ${a[$((RANDOM % ${#a[@]}))]}');
+  // return stdout.replace(/\n/g, '');
 }
 
 if (RANDOM) {
