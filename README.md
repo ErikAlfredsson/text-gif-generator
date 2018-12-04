@@ -14,11 +14,11 @@ Just execute the following command and follow the instructions:
 
 - `node text_gif_generator.js`
 
-# Adding more 'font backgrounds'
+### Adding more 'font backgrounds'
 
 Just add some images to the folder called `backgrounds`. You can even put them in subfolders if you'd like.
 
-# Adding more background colors
+### Adding more background colors
 
 Just add some more colors to the `COLORS` array in the `text_gif_generator.js` script. You can find some colors [here](https://imagemagick.org/script/color.php)
 
