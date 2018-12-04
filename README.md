@@ -31,3 +31,9 @@ To fix this:
 - Download this [Pearl script](https://www.imagemagick.org/Usage/scripts/imagick_type_gen)
 - Make the script executable: `chmod +x [PATH/TO/SCRIPT.pl]`
 - Run the script locally and redirect the output to the file type.xml in ~/.magick: `[PATH/TO/SCRIPT.pl] > ~/.magick/type.xml`
+
+## License
+
+Copyright 2018 Erik Alfredsson
+
+https://creativecommons.org/licenses/by-nc-sa/4.0/
