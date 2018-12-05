@@ -4,7 +4,7 @@
 
 You need to install these dependencies
 
-- Homebrew. Paste this into a Terminal prompt: `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
+- Homebrew `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
 - Node `brew install node`
 - ImageMagick `brew install imagemagick`
 - Ghostscript `brew install ghostscript`
