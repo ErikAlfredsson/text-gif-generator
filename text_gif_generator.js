@@ -97,7 +97,7 @@ function createGIF(backgroundPath, backgroundColor, text) {
 
   words.forEach((word, wordIndex) => {
     const characters = word.split('');
-    const smiley = /:\)|:-\)|:\(|:-\(|;\);-\)|:-O|8-|:P|:D|:\||:S|:\$|:@|8o\||\+o\(|\(H\)|\(C\)|\(\?\)/g.exec(word);
+    const smiley = /:\)|:-\)|:\(|:-\(|;\);-\)|:-O|8-|:P|:D|:B|:\||:S|:\$|:@|8o\||\+o\(|\(H\)|\(C\)|\(\?\)/g.exec(word);
 
     if (smiley) {
       createImage(word, backgroundColor, SIZE * 0.425);
