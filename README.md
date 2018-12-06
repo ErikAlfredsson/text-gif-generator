@@ -4,13 +4,13 @@
 
 You need to install these dependencies
 
-- Homebrew:
+- Homebrew:  
   `/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"`
-- Node:
+- Node:  
   `brew install node`
-- ImageMagick:
+- ImageMagick:  
   `brew install imagemagick`
-- Ghostscript:
+- Ghostscript:  
   `brew install ghostscript`
 
 ## Usage
